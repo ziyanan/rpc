@@ -1,0 +1,49 @@
+{
+  "timestamp": "20260105_180917",
+  "device": "cpu",
+  "data": {
+    "train_samples": 50000,
+    "val_samples": 15000,
+    "input_shape": [
+      7,
+      24
+    ],
+    "output_shape": [
+      7,
+      6
+    ],
+    "features": [
+      "total_flow",
+      "avg_occupancy",
+      "avg_speed",
+      "aq_NO2",
+      "aq_NOx",
+      "aq_O3",
+      "aq_PM25"
+    ]
+  },
+  "model": {
+    "use_conditioned_diffusion": true,
+    "diffusion_hidden": 64,
+    "diffusion_levels": 3,
+    "seq_model_type": "transformer",
+    "seq_d_model": 128,
+    "seq_n_heads": 4,
+    "seq_n_layers": 3,
+    "seq_dim_feedforward": 512,
+    "num_diffusion_steps": 10,
+    "dropout": 0.1,
+    "forecast_horizon": 6
+  },
+  "training": {
+    "epochs": 20,
+    "batch_size": 64,
+    "lr": 0.0002,
+    "reconstruction_weight": 0.5,
+    "logic_conditioning": true,
+    "adversarial_training": true,
+    "attack_prob": 0.5,
+    "attack_type": "uniform",
+    "attack_distribution": "uniform (20% each type)"
+  }
+}

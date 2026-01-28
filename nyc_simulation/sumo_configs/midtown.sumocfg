@@ -1,0 +1,11 @@
+<configuration>
+    <input>
+        <net-file value="midtown.net.xml"/>
+        <route-files value="midtown.rou.xml"/>
+    </input>
+
+    <time>
+        <begin value="0"/>
+        <end value="14400"/>
+    </time>
+</configuration>
