@@ -3,11 +3,11 @@ import logging
 
 class ColoredFormatter(logging.Formatter):
     COLORS = {
-        'DEBUG': '\033[92m',     # Green
-        'INFO': '\033[94m',      # Blue
-        'WARNING': '\033[93m',   # Yellow
-        'ERROR': '\033[91m',     # Red
-        'CRITICAL': '\033[95m',  # Magenta
+        'DEBUG': '\033[92m',
+        'INFO': '\033[94m',
+        'WARNING': '\033[93m',
+        'ERROR': '\033[91m',
+        'CRITICAL': '\033[95m',
     }
     RESET = '\033[0m'
     

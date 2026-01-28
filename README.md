@@ -54,7 +54,7 @@ python net_training/baselines/train_transformer_baseline.py
 
 Outputs are written under `training_runs/`.
 
-# Evaluation (offline)
+# Evaluation
 
 Diffusion model eval:
 

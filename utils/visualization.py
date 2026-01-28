@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 
 def create_actual_vs_predicted_plots(y_true, y_pred, model_name, plots_dir):
     try:
-        # Get the appropriate target columns based on model type
         if model_name == 'emissions':
             target_columns = [
                 'co2_emission_mg_s', 'co_emission_mg_s', 'nox_emission_mg_s',
@@ -24,39 +23,30 @@ def create_actual_vs_predicted_plots(y_true, y_pred, model_name, plots_dir):
         else:
             target_columns = ['metric_1', 'metric_2', 'metric_3', 'metric_4', 'metric_5']
         
-        # Create subplots for each target column (vertical layout like legacy code)
         fig, axes = plt.subplots(len(target_columns), 1, figsize=(15, 4*len(target_columns)))
         if len(target_columns) == 1:
             axes = [axes]
         
-        # Plot each target column separately
         for i, col in enumerate(target_columns):
             ax = axes[i]
             
-            # Get data for this specific column
-            # The data structure is [samples, features] where features are grouped by target columns
             actual_values = y_true[:, i::len(target_columns)].flatten()
             predicted_values = y_pred[:, i::len(target_columns)].flatten()
             
-            # Ensure both arrays have the same length
             min_length = min(len(actual_values), len(predicted_values))
             actual_values = actual_values[:min_length]
             predicted_values = predicted_values[:min_length]
             
-            # Limit to 200 timesteps for better visibility
             max_plot_steps = 200
             if min_length > max_plot_steps:
-                # Take the middle section for better representation
                 start_idx = (min_length - max_plot_steps) // 2
                 end_idx = start_idx + max_plot_steps
                 actual_values = actual_values[start_idx:end_idx]
                 predicted_values = predicted_values[start_idx:end_idx]
                 min_length = max_plot_steps
             
-            # Create time steps for x-axis
             time_steps = range(min_length)
             
-            # Plot actual vs predicted as time series (like legacy code)
             ax.plot(time_steps, actual_values, color='blue', linewidth=1.5, 
                    label='Actual', alpha=0.8)
             ax.plot(time_steps, predicted_values, color='orange', linewidth=1.5, 
@@ -68,10 +58,8 @@ def create_actual_vs_predicted_plots(y_true, y_pred, model_name, plots_dir):
             ax.legend()
             ax.grid(True, alpha=0.3)
             
-            # Add zoom functionality - set x-axis limits for better focus
             ax.set_xlim(0, min_length)
             
-            # Add text showing total data length
             if len(y_true[:, i::len(target_columns)].flatten()) > max_plot_steps:
                 ax.text(0.02, 0.98, f'Showing 200/988 timesteps\n(zoomed view)', 
                        transform=ax.transAxes, verticalalignment='top',
@@ -82,7 +70,6 @@ def create_actual_vs_predicted_plots(y_true, y_pred, model_name, plots_dir):
                      fontsize=16, fontweight='bold')
         plt.tight_layout()
         
-        # Save the plot
         plot_path = os.path.join(plots_dir, f"{model_name}_actual_vs_predicted.png")
         plt.savefig(plot_path, dpi=300, bbox_inches='tight')
         plt.close()
@@ -97,7 +84,6 @@ def create_actual_vs_predicted_plots(y_true, y_pred, model_name, plots_dir):
 
 def evaluate_predictions(y_true, y_pred, model_name, attack_tag):
     try:
-        # Flatten to 1D over all targets
         yt = y_true.reshape(-1)
         yp = y_pred.reshape(-1)
         min_len = min(len(yt), len(yp))
@@ -106,10 +92,8 @@ def evaluate_predictions(y_true, y_pred, model_name, attack_tag):
         mse = float(np.mean((yt - yp) ** 2))
         mae = float(np.mean(np.abs(yt - yp)))
         rmse = float(np.sqrt(mse))
-        # Safe MAPE: avoid divide-by-zero by adding epsilon
         eps = 1e-8
         mape = float(np.mean(np.abs((yt - yp) / (np.maximum(np.abs(yt), eps)))))
-        # R^2 (manual)
         ss_res = float(np.sum((yt - yp) ** 2))
         ss_tot = float(np.sum((yt - np.mean(yt)) ** 2) + eps)
         r2 = 1.0 - ss_res / ss_tot
@@ -141,7 +125,6 @@ def save_evaluation_results(eval_rows):
         df_eval.to_json(json_path, orient='records', indent=2)
         logger.info(f"Evaluation saved: {csv_path}, {json_path}")
         
-        # Print metrics comparison to console
         print("\n" + "="*60)
         print("ATTACK PERFORMANCE COMPARISON")
         print("="*60)
@@ -161,7 +144,6 @@ def save_evaluation_results(eval_rows):
 def generate_performance_summary(predictors):
     logger.info("Generating performance summary...")
     
-    # Count trained models
     trained_count = 0
     trained_models = []
     
@@ -170,7 +152,6 @@ def generate_performance_summary(predictors):
             trained_count += 1
             trained_models.append(name)
     
-    # Print summary
     print("=" * 60)
     print("PERFORMANCE SUMMARY")
     print("=" * 60)
